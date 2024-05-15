@@ -79,7 +79,7 @@
                             <a class="nav-link" href="{{ route('users.index') }}">User</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="">Master Barang</a>
+                            <a class="nav-link" href="{{ route('products.index') }}">Master Barang</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" href="">Transaksi Penjualan</a>
@@ -88,7 +88,7 @@
                             <a class="nav-link" href="">Transaksi Pembelian</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="">Logout</a>
+                            <a class="nav-link" href="{{ route('logout') }}">Logout</a>
                         </li>
                     @endguest
                 </ul>

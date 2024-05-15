@@ -13,7 +13,14 @@ return new class extends Migration
     {
         Schema::create('purchasing_details', function (Blueprint $table) {
             $table->id();
+            $table->bigInteger('product_id')->unsigned()->nullable();
+            $table->string('product_name');
+            $table->integer('purchasing_price');
+            $table->integer('qty');
+            $table->integer('sub_total');
             $table->timestamps();
+
+            $table->foreign('product_id')->references('id')->on('products');
         });
     }
 

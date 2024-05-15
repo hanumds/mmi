@@ -13,7 +13,16 @@ return new class extends Migration
     {
         Schema::create('purchasings', function (Blueprint $table) {
             $table->id();
+            $table->bigInteger('vendor_id')->unsigned()->nullable();
+            $table->bigInteger('admin_id')->unsigned()->nullable();
+            $table->date('date_purchase');
+            $table->enum('purchase_status', ['delivery','not_delivery'])->default('not_delivery');
+            $table->integer('grand_total');
             $table->timestamps();
+
+            $table->foreign('vendor_id')->references('id')->on('users');
+            $table->foreign('admin_id')->references('id')->on('users');
+
         });
     }
 
