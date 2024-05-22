@@ -98,6 +98,8 @@ class ProductController extends Controller
     /**
      * Remove the specified resource from storage.
      */
+
+     //ini test
     public function destroy(Product $product)
     {
         $product->delete();
