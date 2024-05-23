@@ -4,6 +4,7 @@ use App\Http\Controllers\Auth\AuthController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\HaiController;
 use App\Http\Controllers\ProductController;
+use App\Http\Controllers\SellingController;
 use App\Http\Controllers\UserController;
 
 Route::get('/postech/{nik}/{nama}/cek', [HaiController::class, 'index']);
@@ -22,4 +23,5 @@ Route::middleware('auth')->group(function () {
     Route::post('user-import', [UserController::class, 'import'])->name('user-import');
 
     Route::resource('products', ProductController::class);
+    Route::resource('sellings', SellingController::class);
 });
