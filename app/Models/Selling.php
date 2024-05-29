@@ -10,6 +10,7 @@ class Selling extends Model
     use HasFactory;
 
     protected $fillable = [
+        'code_trans',
         'customer_id',
         'cashier_id',
         'date_sell',
