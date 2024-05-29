@@ -1,199 +1,183 @@
 @extends('layout')
-  
+
 @section('content')
-<main class="login-form">
-  <div class="cotainer">
-  <div id="message">
-        </div>
-        <div class="container px-4">
-            <form class="row g-1" id="sample_form">
-                <div class="col-md-6">
-                    <label for="notrx" class="form-label">NOTRX</label>
-                    <input type="text" class="form-control" id="notrx">
-                </div>
-                <div class="col-md-6">
-                    <label for="nama_customer" class="form-label">Customer</label>
-                    <input type="text" class="form-control" id="nama_customer" placeholder="John Doe">
-                </div>
-                <div class="col-md-6">
-                    <label for="date_cell" class="form-label">Tanggal</label>
-                    <input type="date" class="form-control" id="date_sell">
-                </div>
-                <div class="col-md-6">
-                    <label for="kasir" class="form-label">Kasir</label>
-                    <input type="text" class="form-control" id="kasir" value="">
-                </div>
-                <div class="col-12" id="target_area">
-                    <div class="row g-1 p-1" >
-                        <div class="col-md-2">
-                            <label for="kasir" class="form-label">Kode Barang</label>
-                        </div>
-                        <div class="col-md-2">
-                            <label for="kasir" class="form-label">Nama Barang</label>
-                        </div>
-                        <div class="col-md-2">
-                            <label for="kasir" class="form-label">Harga</label>
-                        </div>
-                        <div class="col-md-2">
-                            <label for="kasir" class="form-label">QTY</label>
-                        </div>
-                        <div class="col-md-2">
-                            <label for="kasir" class="form-label">Sub Total</label>
-                        </div>
-                        <div class="col-md-2">
-                            <label for="deleteBrg" class="form-label">Action</label>
+<div class="cotainer">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <form action="{{ route('sellings.store') }}" method="POST" enctype="multipart/form-data">
+                @csrf
+                <div class="row">
+                    <div class="col-xs-12 col-sm-12 col-md-12">
+                        <div class="form-group">
+                            <strong>No TRX:</strong>
+                            <input type="text" name="no_trx" class="form-control" placeholder="No TRX">
+                            @error('name')
+                            <div class="alert alert-danger mt-1 mb-1">{{ $message }}</div>
+                            @enderror
                         </div>
                     </div>
-                    <div class="row g-1 p-1" data-area="area_50">
-                        <div class="col-md-2">
-                            <input type="text" class="form-control" name="kd_brg[]" id="kd_brg">
-                        </div>
-                        <div class="col-md-2">
-                            <input type="text" class="form-control" name="nama_brg[]" id="nama_brg">
-                        </div>
-                        <div class="col-md-2">
-                            <input type="text" class="form-control" name="harga_jual[]" id="harga_jual">
-                        </div>
-                        <div class="col-md-2">
-                            <input type="text" class="form-control" name="qty[]" id="qty">
-                        </div>
-                        <div class="col-md-2">
-                            <input type="text" class="form-control" name="sub_total[]" id="sub_total" readonly>
-                        </div>
-                        <div class="col-md-2">
-                            <button type="button" id="delete_colom" class="btn btn-danger" >Delete</button>
-                            <button type="button" id="add_colom" class="btn btn-secondary">Add</button>
+                    <div class="col-xs-12 col-sm-12 col-md-12">
+                        <div class="form-group">
+                            <strong>Tanggal RAB :</strong>
+                            <input type="date" name="tgl_rab" class="form-control" placeholder="Tanggal RAB">
+                            @error('location')
+                            <div class="alert alert-danger mt-1 mb-1">{{ $message }}</div>
+                            @enderror
                         </div>
                     </div>
-                </div>
-                <div class="row g-1">
-                    <div class="col-md-5 text-end align-items-center">
-                        <label for="total" class="form-label">GRAND TOTAL</label>
+                    <div class="col-xs-12 col-sm-12 col-md-12">
+                        <div class="form-group">
+                            <strong>Penyusun:</strong>
+                            <select name="penyusun" id="penyusun" class="form-select">
+                                <option value="">Pilih</option>
+                                @foreach($managers as $item)
+                                <option value="{{ $item->id }}">{{ $item->name }}</option>
+                                @endforeach
+                            </select>
+                            @error('alias')
+                            <div class="alert alert-danger mt-1 mb-1">{{ $message }}</div>
+                            @enderror
+                        </div>
                     </div>
-                    <div class="col-md-3">
-                        <input type="text" class="form-control" id="total" readonly>
+                    <div class="row col-xs-12 col-sm-12 col-md-12 mt-3">
+                        <div class="col-md-10 form-group">
+                            <input type="text" name="search" id="search" class="form-control" placeholder="Masukan Nama / Kode Product">
+                            @error('name')
+                            <div class="alert alert-danger mt-1 mb-1">{{ $message }}</div>
+                            @enderror
+                        </div>
+                        <div class="col-md-2 form-group text-center">
+                            <button class="btn btn-secondary" type="button" name="btnAdd" id="btnAdd"><i class="fa fa-plus"></i>Tambah</button>
+                        </div>
                     </div>
-                </div>
-                <div class="col-12">
-                    <button type="submit" class="btn btn-primary" id="action_button">Save</button>
+                    <div class="col-xs-12 col-sm-12 col-md-12 mt-3">
+                        <table id="example" class="table table-striped" style="width:100%">
+                            <thead>
+                                <tr>
+                                    <th scope="col">#</th>
+                                    <th scope="col">Nama</th>
+                                    <th scope="col">Harga</th>
+                                    <th scope="col">QTY</th>
+                                    <th scope="col">Sub Total</th>
+                                    <th scope="col">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody id="detail">
+
+                            </tbody>
+                        </table>
+                        <div class="col-xs-12 col-sm-12 col-md-12">
+                            <input type="text" name="jml" class="form-control">
+                            <div class="form-group">
+                                <strong>Grand Total:</strong>
+                                <input type="text" name="total" class="form-control" placeholder="Rp. 0">
+                                @error('tgl_rab')
+                                <div class="alert alert-danger mt-1 mb-1">{{ $message }}</div>
+                                @enderror
+                            </div>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-primary mt-3 ml-3">Submit</button>
                 </div>
             </form>
         </div>
     </div>
-    <script>
-        $(document).ready(function() {
+</div>
 
-            handleBtnDeleteColom();
-            handleBtnAddColom();
-            handleHitung();
+@endsection
+@section('jscustom')
+<script type="text/javascript">
+    var path = "{{ url('api/products') }}";
 
-            $('#sample_form').on('submit', function(event){
-                event.preventDefault();
+    $("#search").autocomplete({
+        source: function(request, response) {
+            $.ajax({
+                url: path,
+                type: 'GET',
+                dataType: "json",
+                data: {
+                    search: request.term,
+                    list: true
+                },
+                success: function(result) {
+                    response(result);
+                    console.log(result);
 
-                const details = [];
-                $('[data-area]').each(function() {
-                    detail = {
-                        "trxid": $('#notrx').val(),
-                        "kd_brg": $(this).find('input#kd_brg').val(),
-                        "nama_barang":$(this).find('input#nama_brg').val(),
-                        "harga_jual": $(this).find('input#harga_jual').val(),
-                        "qty": $(this).find('input#qty').val(),
-                        "sub_total":$(this).find('input#sub_total').val()
-                    };
-                    details.push(detail);
-                });
-
-                
-                
-                var formData = {
-                    "trxid": $('#notrx').val(),
-                    "date_sell": $('#date_sell').val(),
-                    "nama_customer": $('#nama_customer').val(),
-                    "kasir": $('#nama_customer').val(),
-                    "grand_total" : $('#total').val(),
-                    "details" : details
                 }
-                console.log(JSON.stringify(formData));
-
-                $.ajax({
-                    url:"http://localhost:81/konterku/api/penjualan/create.php",
-                    method:"POST",
-                    data: JSON.stringify(formData),
-                    success:function(data){
-                        $('#action_button').attr('disabled', false);
-                        window.location.href = 'http://localhost:81/konterku/views/penjualan/';
-                    },
-                    error: function(err) {
-                        console.log(err);   
-                        $('#message').html('<div class="alert alert-danger">'+err.responseJSON+'</div>');  
-                    }
-                });
             });
-
-            function handleBtnAddColom(){
-                var target_area = $("#target_area");
-                $("button#add_colom").off("click").on("click", function(){
-                    var _this = $(this),
-                    currentArea = _this.parent().parent(),
-                    cloningan = currentArea.clone();
-
-                    target_area.append(cloningan);
-                    setTimeout(() => {
-                        handleBtnAddColom();
-                        handleHitung();
-                        handleBtnDeleteColom();
-                    }, 500);
-                });
-            }
-            
-            function handleBtnDeleteColom(){
-                $("button#delete_colom").off("click").on("click", function(){
-                    var el_count = $('[data-area]').length;
-                    //alert(el_count);
-                    if(el_count < 2){
-                        return false;
+        },
+        select: function(event, ui) {
+            $('#search').val(ui.item.label);
+            if ($("input[name=jml]").val() > 0) {
+                for (let i = 1; i <= $("input[name=jml]").val(); i++) {
+                    id = $("input[name=id_product" + i + "]").val();
+                    if (id == ui.item.id) {
+                        alert(ui.item.value + ' sudah ada!');
+                        break;
+                    } else {
+                        add(ui.item.id);
                     }
-
-                    var _this = $(this),
-                    currentArea = _this.parent().parent();
-
-                    currentArea.remove();
-                    gotoView();
-                });
+                }
+            } else {
+                add(ui.item.id);
             }
+            return false;
+        }
+    });
 
-            function handleHitung(){
-                $('input#qty').off("input").on("input", function(){
-                    var _this = $(this),
-                    currentArea = _this.parent().parent();
-                    harga = currentArea.find('input[name="harga_jual[]"]').val();
-                    qty = currentArea.find('input[name="qty[]"]').val();
-                    // console.log(bi+"*"+qty);
-                    total = harga*qty;
-
-                    currentArea.find('input[name="sub_total[]"]').val(total);
-                    hitungTotal();
-                });   
-            }
-
-            function hitungTotal(){
-                var total = 0;
-                $('[data-area="area_50"]').each(function(){
-                    var _this = $(this);
-                    subtot =  _this.find("input[name='sub_total[]']").val();
-                    total += parseFloat(subtot);
-                });
-                $('#total').val(total);
-                // console.log(total);
-
-            }
-
-            function gotoView(){
-                var el = $('[data-area="area_50"]').find(".row:last-child")[0];
-                el.scrollIntoView();
+    function add(id) {
+        const path = "{{ url('api/products') }}/" + id;
+        var html = "";
+        var no = 0;
+        if ($('#detail tr').length > no) {
+            html = $('#detail').html();
+            no = no + $('#detail tr').length;
+        }
+        $.ajax({
+            url: path,
+            type: 'GET',
+            dataType: "json",
+            success: function(data) {
+                console.log(data);
+                no++;
+                html += '<tr>' +
+                    '<td>' + no + '<input type="hidden" name="id_product' + no + '" class="form-control" value="' + data.id + '"></td>' +
+                    '<td><input type="text" name="product_name' + no + '" class="form-control" value="' + data.product_name + '"></td>' +
+                    '<td><input type="text" name="price' + no + '" class="form-control" value="' + data.selling_price + '"></td>' +
+                    '<td><input type="text" name="qty' + no + '" class="form-control" oninput="sumQty(' + no + ', this.value)" value="1"></td>' +
+                    '<td><input type="text" name="sub_total' + no + '" class="form-control"></td>' +
+                    '<td><button type="button" class="btn btn-sm btn-danger" id="deleteDetail">X</button></td>' +
+                    '</tr>';
+                $('#detail').html(html);
+                $("input[name=jml]").val(no);
+                sumQty(no, 1);
             }
         });
-    </script>
-  </div>
-</main>
+    }
+
+    function sumQty(no, q) {
+        var price = $("input[name=price" + no + "]").val();
+        var subtotal = q * parseInt(price);
+        $("input[name=sub_total" + no + "]").val(subtotal);
+        console.log(q + "*" + price + "=" + subtotal);
+        sumTotal();
+    }
+
+    function sumTotal() {
+        var total = 0;
+        for (let i = 1; i <= $("input[name=jml]").val(); i++) {
+            var sub = $("input[name=sub_total" + i + "]").val();
+            total = total + parseInt(sub);
+        }
+        $("input[name=total]").val(total);
+    }
+
+    $(document).ready(function() {
+        $('#detail').on('click', 'button.btn', function() {
+            let row = $(this).closest('tr');
+            row.remove();
+        });
+
+    });
+</script>
 @endsection

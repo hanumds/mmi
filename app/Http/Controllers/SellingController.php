@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Selling;
+use App\Models\User;
 use Illuminate\Http\Request;
 
 class SellingController extends Controller
@@ -21,7 +22,9 @@ class SellingController extends Controller
      */
     public function create()
     {
-        return view('sellings.create');
+        $managers = User::all();
+
+        return view('sellings.create', compact('managers'));
     }
 
     /**

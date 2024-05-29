@@ -15,8 +15,20 @@ class ProductController extends Controller
      */
     public function index(Request $request)
     {
-        $products = Product::paginate($request->perPage);
-        return response()->json($products);
+        $products = Product::query();
+        if ($request->get('search')) {
+            $products->where('product_name', 'LIKE', '%' . $request->get('search') . '%');
+        }
+
+        if($request->perPage){
+            return response()->json($products->paginate($request->perPage));
+        }
+
+        if($request->list){
+            $products->select('id', 'product_name as value');
+            return response()->json($products->get());
+        }
+        
     }
 
     /**
@@ -99,7 +111,7 @@ class ProductController extends Controller
      * Remove the specified resource from storage.
      */
 
-     //ini test
+    //ini test
     public function destroy(Product $product)
     {
         $product->delete();
