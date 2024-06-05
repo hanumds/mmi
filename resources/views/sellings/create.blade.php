@@ -9,32 +9,49 @@
                 <div class="row">
                     <div class="col-xs-12 col-sm-12 col-md-12">
                         <div class="form-group">
-                            <strong>No TRX:</strong>
-                            <input type="text" name="no_trx" class="form-control" placeholder="No TRX">
-                            @error('name')
+                            <strong>Code Trans:</strong>
+                            <input type="text" name="code_trans" class="form-control" placeholder="No TRX">
+                            @error('code_trans')
                             <div class="alert alert-danger mt-1 mb-1">{{ $message }}</div>
                             @enderror
                         </div>
                     </div>
                     <div class="col-xs-12 col-sm-12 col-md-12">
                         <div class="form-group">
-                            <strong>Tanggal RAB :</strong>
-                            <input type="date" name="tgl_rab" class="form-control" placeholder="Tanggal RAB">
-                            @error('location')
+                            <strong>Date Sell :</strong>
+                            <input type="date" name="date_sell" class="form-control" placeholder="Date Sell">
+                            @error('date_sell')
                             <div class="alert alert-danger mt-1 mb-1">{{ $message }}</div>
                             @enderror
                         </div>
                     </div>
                     <div class="col-xs-12 col-sm-12 col-md-12">
                         <div class="form-group">
-                            <strong>Penyusun:</strong>
-                            <select name="penyusun" id="penyusun" class="form-select">
+                            <strong>Customer:</strong>
+                            <select name="customer_id" id="customer_id" class="form-select">
                                 <option value="">Pilih</option>
-                                @foreach($managers as $item)
+                                @foreach($customers as $item)
                                 <option value="{{ $item->id }}">{{ $item->name }}</option>
                                 @endforeach
                             </select>
-                            @error('alias')
+                            @error('customer_id')
+                            <div class="alert alert-danger mt-1 mb-1">{{ $message }}</div>
+                            @enderror
+                        </div>
+                    </div>
+                    <div class="col-xs-12 col-sm-12 col-md-12">
+                        <div class="form-group">
+                            <strong>Cashier :</strong>
+                            <select name="cashier_id" id="cashier_id" class="form-select">
+                                <option value="">Pilih</option>
+                                @foreach($cashiers as $item)
+                                <option value="{{ $item->id }}" 
+                                    {{ Auth()->user()->id == $item->id ? 'selected' : ''}}>
+                                    {{ $item->name }}
+                                </option>
+                                @endforeach
+                            </select>
+                            @error('cashier_id')
                             <div class="alert alert-danger mt-1 mb-1">{{ $message }}</div>
                             @enderror
                         </div>
@@ -70,8 +87,8 @@
                             <input type="text" name="jml" class="form-control">
                             <div class="form-group">
                                 <strong>Grand Total:</strong>
-                                <input type="text" name="total" class="form-control" placeholder="Rp. 0">
-                                @error('tgl_rab')
+                                <input type="text" name="grand_total" class="form-control" placeholder="Rp. 0">
+                                @error('grand_total')
                                 <div class="alert alert-danger mt-1 mb-1">{{ $message }}</div>
                                 @enderror
                             </div>
@@ -169,7 +186,7 @@
             var sub = $("input[name=sub_total" + i + "]").val();
             total = total + parseInt(sub);
         }
-        $("input[name=total]").val(total);
+        $("input[name=grand_total]").val(total);
     }
 
     $(document).ready(function() {

@@ -85,7 +85,7 @@
                             <a class="nav-link" href="{{ route('products.index') }}">Master Barang</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="">Transaksi Penjualan</a>
+                            <a class="nav-link" href="{{ route('sellings.index') }}">Transaksi Penjualan</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" href="">Transaksi Pembelian</a>
