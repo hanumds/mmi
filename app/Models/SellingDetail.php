@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
 
 class SellingDetail extends Model
 {
@@ -20,5 +21,14 @@ class SellingDetail extends Model
 
     public function sell(){
         return $this->belongsTo(Selling::class, 'id_sell');
+    }
+
+    public static function boot(){
+        parent::boot();
+
+        static::creating(function ($details){
+            $product = DB::table('products')->where('id', $details->product_id);
+            $product->update(["qty" => round($product->first()->qty - $details->qty)]);
+        });
     }
 }
