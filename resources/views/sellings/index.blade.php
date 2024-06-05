@@ -10,43 +10,49 @@
                     {{ session('success') }}
                 </div>
                 @endif
-                <div class="card-header">{{ __('Table Users') }}</div>
+                <div class="card-header">{{ __('Table Sellings') }}</div>
 
                 <div class="card-body">
-                    <a href="{{ route('users.create') }}" class="btn btn-sm btn-secondary">
-                        Tambah User
+                    <a href="{{ route('sellings.create') }}" class="btn btn-sm btn-secondary">
+                        Add Sell
                     </a>
                     <a href="{{ route('user-export') }}" class="btn btn-sm btn-primary">
-                        Export User to Excel
+                        Export Sell to Excel
                     </a>
                     <a id="importButton" class="btn btn-sm btn-warning">
-                        Import User
+                        Import Sell
                     </a>
-                    <table class="table table-striped" id="users">
+                    <table class="table table-striped" id="sellings">
                         <thead>
                             <tr>
                                 <th scope="col">#</th>
-                                <th scope="col">Full Name</th>
-                                <th scope="col">Email</th>
-                                <th scope="col">Role</th>
+                                <th scope="col">NO TRX</th>
+                                <th scope="col">Tanggal</th>
+                                <th scope="col">Cashier</th>
+                                <th scope="col">Customer</th>
+                                <th scope="col">Total Item</th>
+                                <th scope="col">Grand Total</th>
                                 <th scope="col">Action</th>
                             </tr>
                         </thead>
                         <tbody>
                             <?php $no = 0; ?>
 
-                            @foreach($users as $row)
+                            @foreach($sellings as $row)
                             <?php $no++ ?>
                             <tr>
                                 <th scope="row">{{ $no }}</th>
-                                <td>{{$row->name}}</td>
-                                <td>{{$row->email}}</td>
-                                <td>{{$row->role->role_name}}</td>
+                                <td>{{$row->code_trans}}</td>
+                                <td>{{$row->date_sell}}</td>
+                                <td>{{$row->cashier->name}}</td>
+                                <td>{{$row->customer->name}}</td>
+                                <td>{{$row->details->count()}}</td>
+                                <td>{{$row->grand_total}}</td>
                                 <td>
-                                    <a href="{{ route('users.edit', $row->id) }}" class="btn btn-sm btn-warning">
+                                    <a href="{{ route('sellings.edit', $row->id) }}" class="btn btn-sm btn-warning">
                                         Edit
                                     </a>
-                                    <form action="{{ route('users.destroy',$row->id) }}" method="POST" style="display: inline" onsubmit="return confirm('Do you really want to delete {{ $row->name }}?');">
+                                    <form action="{{ route('sellings.destroy',$row->id) }}" method="POST" style="display: inline" onsubmit="return confirm('Do you really want to delete {{ $row->name }}?');">
                                         @csrf
                                         @method('DELETE')
                                         <button type="submit" class="btn btn-sm btn-danger"><span class="text-muted">
@@ -90,6 +96,6 @@
                 $('#importModal').modal('show');
             });
         })
-        new DataTable('#users');
+        new DataTable('#sellings');
     </script>
     @endsection
