@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Selling;
 use App\Models\SellingDetail;
 use App\Models\User;
+use App\Models\Product;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -59,6 +60,11 @@ class SellingController extends Controller
             $sell->save();
 
             for ($i = 1; $i <= $request->jml; $i++) {
+                $product = Product::find($data['id_product'.$i]);
+                if($data['qty'.$i] > $product->qty){
+                    return redirect()->route('sellings.create')
+        ->withErrors('Oops !, data not available');
+                }
                 $detail = new SellingDetail();
                 $detail->code_trans =  $data['code_trans'];
                 $detail->product_id =  $data['id_product'.$i];
@@ -71,6 +77,9 @@ class SellingController extends Controller
             }
 
             DB::commit();
+
+            return redirect()->route('sellings.index')
+        ->withSuccess('Great! You have successfully created selling');
         } catch (\Throwable $th) {
             DB::rollBack();
             throw $th;

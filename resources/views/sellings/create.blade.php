@@ -3,6 +3,11 @@
 @section('content')
 <div class="cotainer">
     <div class="row justify-content-center">
+        @if (session('errors'))
+        <div class="alert alert-danger" role="alert">
+            {{ session('errors') }}
+        </div>
+        @endif
         <div class="col-md-8">
             <form action="{{ route('sellings.store') }}" method="POST" enctype="multipart/form-data">
                 @csrf
@@ -155,7 +160,12 @@
             type: 'GET',
             dataType: "json",
             success: function(data) {
-                console.log(data);
+                console.log(data.qty);
+                if(data.qty <= 0){
+                    alert('Maaf '+data.product_name+' kosong');
+                    return false;
+                }
+
                 no++;
                 html += '<tr>' +
                     '<td>' + no + '<input type="hidden" name="id_product' + no + '" class="form-control" value="' + data.id + '"></td>' +
