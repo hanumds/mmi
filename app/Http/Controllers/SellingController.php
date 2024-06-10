@@ -6,6 +6,7 @@ use App\Models\Selling;
 use App\Models\SellingDetail;
 use App\Models\User;
 use App\Models\Product;
+use PDF;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -18,6 +19,16 @@ class SellingController extends Controller
     {
         $sellings = Selling::all();
         return view('sellings.index', compact('sellings'));
+    }
+
+    public function report(Request $request)
+    {
+        $sellings = Selling::query();
+        if ($request->startDate && $request->endDate) {
+            $sellings->whereBetween('date_sell', [$request->startDate , $request->endDate]);
+        }
+        $sellings = $sellings->get();
+        return view('sellings.report', compact('sellings'));
     }
 
     /**
@@ -89,9 +100,11 @@ class SellingController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(Selling $selling)
     {
-        //
+        // return view('sellings.print', compact('selling'));
+        $pdf = PDF::loadview('sellings.print', ['selling' => $selling]);
+    	return $pdf->stream('nota-penjualan.pdf');
     }
 
     /**

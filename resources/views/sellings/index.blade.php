@@ -22,6 +22,9 @@
                     <a id="importButton" class="btn btn-sm btn-warning">
                         Import Sell
                     </a>
+                    <a href="{{ route('sellings-report') }}" class="btn btn-sm btn-success">
+                        Sellings Report
+                    </a>
                     <table class="table table-striped" id="sellings">
                         <thead>
                             <tr>
@@ -51,6 +54,9 @@
                                 <td>
                                     <a href="{{ route('sellings.edit', $row->id) }}" class="btn btn-sm btn-warning">
                                         Edit
+                                    </a>
+                                    <a href="{{ route('sellings.show', $row->id) }}" class="btn btn-sm btn-secondary">
+                                        Print
                                     </a>
                                     <form action="{{ route('sellings.destroy',$row->id) }}" method="POST" style="display: inline" onsubmit="return confirm('Do you really want to delete {{ $row->name }}?');">
                                         @csrf

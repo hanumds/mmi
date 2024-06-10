@@ -24,4 +24,6 @@ Route::middleware('auth')->group(function () {
 
     Route::resource('products', ProductController::class);
     Route::resource('sellings', SellingController::class);
+    Route::get('report/sellings', [SellingController::class, 'report'])->name('sellings-report');
+
 });
