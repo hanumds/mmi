@@ -10,8 +10,7 @@
                         {{ session('success') }}
                     </div>
                 @endif
-                <div class="card-header">{{ __('Table Products') }}</div>
-  
+                <div class="card-header">{{ __('Table Products') }}</div>   
                 <div class="card-body">
                     <a href="{{ route('products.create') }}" class="btn btn-sm btn-secondary">
                         Tambah Product
@@ -25,6 +24,7 @@
                                 <th scope="col">Selling Price</th>
                                 <th scope="col">Buying Price</th>
                                 <th scope="col">Product Type</th>
+                                <th scope="col">Image</th> <!-- Kolom gambar -->
                                 <th scope="col">Product Status</th>
                                 <th scope="col">Action</th>
                             </tr>
@@ -41,27 +41,32 @@
                             <td>{{$row->buying_price}}</td>
                             <td>{{$row->product_type->product_type_name}}</td>
                             <td>
+                                @if ($row->image_path)
+                                <img src="{{ asset('storage/' . $product->image_path) }}" class="card-img-top" alt="{{ $product->product_name }}" style="height: 200px; object-fit: cover;">
+                                @else
+                                    <span>No Image</span>
+                                @endif
+                            </td>
+                            <td>
                                 @if ($row->qty > 0)
                                     Available
                                 @else
                                     Unavailable
                                 @endif
                             </td>
-                                <td> 
-                                    <a href="{{ route('products.edit', $row->id) }}" class="btn btn-sm btn-warning">
-                                        Edit
-                                    </a>
-                                    <form action="{{ route('products.destroy',$row->id) }}" method="POST"
-                                    style="display: inline" onsubmit="return confirm('Do you really want to delete {{ $row-> product_name }}?');">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit" class="btn btn-sm btn-danger"><span class="text-muted">
-                                        Delete
-                                    </span></button>
-                                    </form>
-                                </td>
-                            </tr>
-                            @endforeach
+                             
+                            <td> 
+                                <a href="{{ route('products.edit', $row->id) }}" class="btn btn-sm btn-warning">
+                                    Edit
+                                </a>
+                                <form action="{{ route('products.destroy',$row->id) }}" method="POST" style="display: inline" onsubmit="return confirm('Do you really want to delete {{ $row-> product_name }}?');">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" class="btn btn-sm btn-danger"><span class="text-muted">Delete</span></button>
+                                </form>
+                            </td>
+                        </tr>
+                        @endforeach
                         </tbody>
                     </table>
                 </div>
@@ -69,6 +74,7 @@
         </div>
     </div>
 </div>
+
 <script>
     new DataTable('#products');
 </script>

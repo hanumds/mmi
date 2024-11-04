@@ -43,6 +43,11 @@
             margin-left: 0;
             margin-right: 0;
         }
+        .card-img-top 
+        {
+             object-fit: cover;
+        }
+
     </style>
     
     <link rel="stylesheet" href="https://code.jquery.com/ui/1.13.3/themes/base/jquery-ui.css">
@@ -87,6 +92,9 @@
                         <li class="nav-item">
                             <a class="nav-link" href="{{ route('sellings.index') }}">Transaksi Penjualan</a>
                         </li>
+                        <li class="nav-item">
+                    <a class="nav-link" href="{{ route('products.tampil') }}">Tampil Produk</a> <!-- Menu Tampil Produk -->
+                </li>
                         <li class="nav-item">
                             <a class="nav-link" href="">Transaksi Pembelian</a>
                         </li>

@@ -7,6 +7,7 @@ use App\Models\Product;
 use App\Models\ProductType;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use Storage;
 
 class ProductController extends Controller
 {
@@ -36,35 +37,53 @@ class ProductController extends Controller
      */
     public function create()
     {
+        $product_types = ProductType::all();
+        return view('products.create', compact('product_types'));           
     }
 
     /**
      * Store a newly created resource in storage.
      */
     public function store(Request $request)
-    {
-        $validator = Validator::make($request->all(), [
-            'product_name' => 'required',
-            'qty' => 'required',
-            'selling_price' => 'required',
-            'buying_price' => 'required',
-            'product_type_id' => 'required',
-        ]);
-        if ($validator->fails()) {
-            return response()->json($validator->errors()->toJson(), 400);
-        }
-        $product = Product::create([
-            'product_name' => $request->product_name,
-            'qty' => $request->qty,
-            'selling_price' => $request->selling_price,
-            'buying_price' => $request->buying_price,
-            'product_type_id' => $request->product_type_id,
-        ]);
-        return response()->json([
-            'message' => 'Product successfully created',
-            'product' => $product
-        ], 201);
+{
+    $request->validate($request->all(), [
+        'product_name' => 'required',
+        'qty' => 'required',
+        'selling_price' => 'required',
+        'buying_price' => 'required',
+        'product_type_id' => 'required',
+        'image' => 'required|mimes:jpeg,png,jpg,gif|max:2048', // Validasi gambar
+    ]);
+    $product = new Product($request->except('image'));
+
+    // dd($request->all());
+    // Simpan gambar
+
+    if ($request->hasFile('image')) {
+        // Simpan file gambar ke folder 'products' di disk publik
+        $imagePath = $request->file('image')->store('products', 'public');
+    
+        // Simpan path gambar di kolom 'image_path' di tabel Product
+        $product->image_path = 'storage/products/' . basename($imagePath);
     }
+    
+    // Simpan data produk ke database
+    $product->save();
+
+    $product = Product::create([
+        'product_name' => $request->product_name,
+        'qty' => $request->qty,
+        'selling_price' => $request->selling_price,
+        'buying_price' => $request->buying_price,
+        'product_type_id' => $request->product_type_id,
+        'image_path' => $imagePath, // Simpan jalur gambar
+    ]);
+
+    return response()->json([
+        'message' => 'Product successfully created',
+        'product' => $product
+    ], 201);
+}
 
     /**
      * Display the specified resource.
@@ -88,24 +107,43 @@ class ProductController extends Controller
      * Update the specified resource in storage.
      */
     public function update(Request $request, Product $product)
-    {
-        $request->validate([
-            'product_name' => 'required',
-            'qty' => 'required',
-            'selling_price' => 'required',
-            'buying_price' => 'required',
-            'product_type' => 'required',
-        ]);
+{
+    $request->validate([
+        'product_name' => 'required',
+        'qty' => 'required',
+        'selling_price' => 'required',
+        'buying_price' => 'required',
+        'product_type_id' => 'required',
+        'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048', // Validasi gambar opsional
+    ]);
 
-        $product->product_name = $request->product_name;
-        $product->qty = $request->qty;
-        $product->selling_price = $request->selling_price;
-        $product->buying_price = $request->buying_price;
-        $product->product_type_id = $request->product_type;
-        $product->save();
-
-        return redirect()->route('products.index')->withSuccess('Great! You have sucessfully Update ' . $product->product_name);
+    // Jika ada file gambar baru, simpan file tersebut
+    if ($request->hasFile('image')) {
+        // Hapus gambar lama jika ada
+        if ($product->image_path && \Storage::disk('public')->exists($product->image_path)) {
+            \Storage::disk('public')->delete($product->image_path);
+        }
+        
+        // Simpan gambar baru
+        $imagePath = $request->file('image')->store('products', 'public');
+        $product->image_path = $imagePath; // Perbarui jalur gambar
     }
+
+    // Update data produk
+    $product->product_name = $request->product_name;
+    $product->qty = $request->qty;
+    $product->selling_price = $request->selling_price;
+    $product->buying_price = $request->buying_price;
+    $product->product_type_id = $request->product_type_id;
+    
+    $product->save();
+
+    return response()->json([
+        'message' => 'Product successfully updated',
+        'product' => $product
+    ], 200);
+}
+
 
     /**
      * Remove the specified resource from storage.

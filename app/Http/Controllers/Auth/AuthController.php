@@ -24,7 +24,7 @@ class AuthController extends Controller
             return view('dashboard', compact('user'), ['chart' => $userChart->build()]);
         }
   
-        return redirect("login")->withSuccess('Opps! You do not have access');
+        return redirect()->route('about');
     }
 
     public function index(): View
@@ -92,6 +92,6 @@ class AuthController extends Controller
         Session::flush();
         Auth::logout();
   
-        return Redirect('login');
+        return Redirect('about');
     }
 }

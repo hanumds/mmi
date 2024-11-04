@@ -18,11 +18,11 @@ return new class extends Migration
             $table->integer('selling_price');
             $table->integer('buying_price');
             $table->bigInteger('product_type_id')->unsigned()->nullable();
-            $table->enum('product_status', ['available','unvailable'])->default('available');
+            $table->enum('product_status', ['available', 'unavailable'])->default('available');
+            $table->string('image_path')->nullable();  // Kolom untuk menyimpan jalur gambar produk
             $table->timestamps();
 
-            $table->foreign('product_type_id')->references('id')->on('product_types');
-
+            $table->foreign('product_type_id')->references('id')->on('product_types')->onDelete('set null');
         });
     }
 

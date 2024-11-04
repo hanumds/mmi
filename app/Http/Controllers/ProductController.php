@@ -38,20 +38,24 @@ class ProductController extends Controller
             'selling_price' => 'required',
             'buying_price' => 'required',
             'product_type' => 'required',
+            'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048', // Validasi gambar
+
         ]);
 
-        $data = $request->all();
-        // dd($data);
-        $check = Product::create([
-            'product_name' => $data['product_name'],
-            'qty' => $data['qty'],
-            'selling_price' => $data['selling_price'],
-            'buying_price' =>$data['buying_price'],
-            'product_type_id' =>$data['product_type']
-          ]);
+        $imagePath = $request->file('image')->store('products', 'public');
+        dd($request->all);
+        $product = Product::create([
+            'product_name' => $request->product_name,
+            'qty' => $request->qty,
+            'selling_price' => $request->selling_price,
+            'buying_price' => $request->buying_price,
+            'product_type_id' => $request->product_type,
+            'image_path' => $imagePath, // Simpan jalur gambar
+        ]);
+    
 
-        return redirect()->route('products.index')->withSuccess('Great! You have Successfully Created');
-    }
+         return redirect()->route('products.index')->withSuccess('Product has been successfully created.');
+}
 
     /**
      * Display the specified resource.
@@ -76,20 +80,40 @@ class ProductController extends Controller
      */
     public function update(Request $request, Product $product)
     {
+        // Validasi form termasuk gambar
         $request->validate([
             'product_name' => 'required',
             'qty' => 'required',
             'selling_price' => 'required',
             'buying_price' => 'required',
             'product_type' => 'required',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048', // Validasi gambar opsional
         ]);
-
+          // Jika ada file gambar baru, simpan file tersebut
+    if ($request->hasFile('image')) {
+        $imagePath = $request->file('image')->store('products', 'public');
+        $product->image_path = $imagePath; // Perbarui jalur gambar
+    }
+   // Update data produk
+    // Mengisi atribut produk dari request
         $product->product_name = $request->product_name;
         $product->qty = $request->qty;
         $product->selling_price = $request->selling_price;
         $product->buying_price = $request->buying_price;
         $product->product_type_id = $request->product_type;
+
+        // Cek apakah ada file gambar yang diunggah
+        if ($request->hasFile('image')) {
+            // Simpan file gambar ke folder 'products' di disk publik
+            $imagePath = $request->file('image')->store('products', 'public');
+
+            // Simpan path gambar di kolom 'image_path' produk
+            $product->image_path = 'storage/products/' . basename($imagePath);
+        }
+
+        // Simpan data produk ke database
         $product->save();
+
 
         return redirect()->route('products.index')->withSuccess('Great! You have sucessfully Update '.$product->product_name);
     }
@@ -102,5 +126,11 @@ class ProductController extends Controller
         $product->delete();
 
         return redirect()->route('products.index')->withSuccess('Great! You have sucessfully Deleted '.$product->product_name);
+    }
+
+    public function tampilProduk()
+    {
+        $products = Product::all();
+        return view('products.tampil', compact('products'));
     }
 }
